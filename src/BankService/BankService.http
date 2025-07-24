@@ -1,6 +1,6 @@
 @BankService_HostAddress = http://localhost:5294
 
-GET {{BankService_HostAddress}}/weatherforecast/
+GET {{BankService_HostAddress}}/api/accounts/12345/balance
 Accept: application/json
 
 ###
