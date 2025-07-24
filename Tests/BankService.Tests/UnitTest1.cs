@@ -27,9 +27,9 @@ public class AccountStateTests
         var accountName = "Test Account";
         var createdAt = DateTime.UtcNow.AddDays(-1);
         var lastUpdated = DateTime.UtcNow;
-        var transactions = new List<Transaction>
+        var transactions = new List<ITransactionEvent>
         {
-            new Transaction { Type = TransactionType.Deposit, Amount = 100.50m }
+            new MoneyDeposited(accountId, 100.50m, DateTime.UtcNow, Guid.NewGuid(), "Test deposit")
         };
 
         // Act
@@ -55,16 +55,17 @@ public class AccountStateTests
     public void AccountState_BalanceCalculation_WithMultipleTransactions_ShouldBeCorrect()
     {
         // Arrange
+        var accountId = "test-123";
         var accountState = new AccountState
         {
-            AccountId = "test-123",
+            AccountId = accountId,
             AccountName = "Test Account",
-            Transactions = new List<Transaction>
+            Transactions = new List<ITransactionEvent>
             {
-                new Transaction { Type = TransactionType.Deposit, Amount = 100m },
-                new Transaction { Type = TransactionType.Deposit, Amount = 50m },
-                new Transaction { Type = TransactionType.Withdrawal, Amount = 25m },
-                new Transaction { Type = TransactionType.Deposit, Amount = 75m }
+                new MoneyDeposited(accountId, 100m, DateTime.UtcNow, Guid.NewGuid(), "Deposit 1"),
+                new MoneyDeposited(accountId, 50m, DateTime.UtcNow, Guid.NewGuid(), "Deposit 2"),
+                new MoneyWithdrawn(accountId, 25m, DateTime.UtcNow, Guid.NewGuid(), "Withdrawal 1"),
+                new MoneyDeposited(accountId, 75m, DateTime.UtcNow, Guid.NewGuid(), "Deposit 3")
             }
         };
 
@@ -79,12 +80,13 @@ public class AccountStateTests
     public void AccountState_BalanceCalculation_WithOnlyDeposits_ShouldBeCorrect()
     {
         // Arrange
+        var accountId = "test-123";
         var accountState = new AccountState
         {
-            Transactions = new List<Transaction>
+            Transactions = new List<ITransactionEvent>
             {
-                new Transaction { Type = TransactionType.Deposit, Amount = 100m },
-                new Transaction { Type = TransactionType.Deposit, Amount = 50m }
+                new MoneyDeposited(accountId, 100m, DateTime.UtcNow, Guid.NewGuid(), "Deposit 1"),
+                new MoneyDeposited(accountId, 50m, DateTime.UtcNow, Guid.NewGuid(), "Deposit 2")
             }
         };
 
@@ -96,12 +98,13 @@ public class AccountStateTests
     public void AccountState_BalanceCalculation_WithOnlyWithdrawals_ShouldBeNegative()
     {
         // Arrange
+        var accountId = "test-123";
         var accountState = new AccountState
         {
-            Transactions = new List<Transaction>
+            Transactions = new List<ITransactionEvent>
             {
-                new Transaction { Type = TransactionType.Withdrawal, Amount = 25m },
-                new Transaction { Type = TransactionType.Withdrawal, Amount = 15m }
+                new MoneyWithdrawn(accountId, 25m, DateTime.UtcNow, Guid.NewGuid(), "Withdrawal 1"),
+                new MoneyWithdrawn(accountId, 15m, DateTime.UtcNow, Guid.NewGuid(), "Withdrawal 2")
             }
         };
 
@@ -110,48 +113,48 @@ public class AccountStateTests
     }
 }
 
-public class TransactionTests
+public class TransactionEventTests
 {
     [Fact]
-    public void Transaction_DefaultValues_ShouldBeCorrect()
+    public void MoneyDeposited_ShouldImplementITransactionEvent()
     {
+        // Arrange
+        var accountId = "test-123";
+        var amount = 50.25m;
+        var timestamp = DateTime.UtcNow;
+        var id = Guid.NewGuid();
+        var description = "Test deposit";
+
         // Act
-        var transaction = new Transaction();
+        var moneyDeposited = new MoneyDeposited(accountId, amount, timestamp, id, description);
 
         // Assert
-        Assert.NotEqual(Guid.Empty, transaction.Id);
-        Assert.Equal(TransactionType.Deposit, transaction.Type);
-        Assert.Equal(0m, transaction.Amount);
-        Assert.True(transaction.Timestamp <= DateTime.UtcNow);
-        Assert.Equal(string.Empty, transaction.Description);
+        Assert.Equal(accountId, moneyDeposited.AccountId);
+        Assert.Equal(amount, moneyDeposited.Amount);
+        Assert.Equal(timestamp, moneyDeposited.Timestamp);
+        Assert.Equal(id, moneyDeposited.Id);
+        Assert.Equal(description, moneyDeposited.Description);
     }
 
     [Fact]
-    public void Transaction_SetProperties_ShouldWorkCorrectly()
+    public void MoneyWithdrawn_ShouldImplementITransactionEvent()
     {
         // Arrange
+        var accountId = "test-123";
+        var amount = 25.50m;
+        var timestamp = DateTime.UtcNow;
         var id = Guid.NewGuid();
-        var type = TransactionType.Withdrawal;
-        var amount = 50.25m;
-        var timestamp = DateTime.UtcNow.AddMinutes(-5);
         var description = "Test withdrawal";
 
         // Act
-        var transaction = new Transaction
-        {
-            Id = id,
-            Type = type,
-            Amount = amount,
-            Timestamp = timestamp,
-            Description = description
-        };
+        var moneyWithdrawn = new MoneyWithdrawn(accountId, amount, timestamp, id, description);
 
         // Assert
-        Assert.Equal(id, transaction.Id);
-        Assert.Equal(type, transaction.Type);
-        Assert.Equal(amount, transaction.Amount);
-        Assert.Equal(timestamp, transaction.Timestamp);
-        Assert.Equal(description, transaction.Description);
+        Assert.Equal(accountId, moneyWithdrawn.AccountId);
+        Assert.Equal(amount, moneyWithdrawn.Amount);
+        Assert.Equal(timestamp, moneyWithdrawn.Timestamp);
+        Assert.Equal(id, moneyWithdrawn.Id);
+        Assert.Equal(description, moneyWithdrawn.Description);
     }
 }
 
@@ -180,17 +183,19 @@ public class EventTests
         // Arrange
         var accountId = "test-123";
         var amount = 50.25m;
-        var newBalance = 150.75m;
         var timestamp = DateTime.UtcNow;
+        var id = Guid.NewGuid();
+        var description = "Test deposit";
 
         // Act
-        var moneyDeposited = new MoneyDeposited(accountId, amount, newBalance, timestamp);
+        var moneyDeposited = new MoneyDeposited(accountId, amount, timestamp, id, description);
 
         // Assert
         Assert.Equal(accountId, moneyDeposited.AccountId);
         Assert.Equal(amount, moneyDeposited.Amount);
-        Assert.Equal(newBalance, moneyDeposited.NewBalance);
         Assert.Equal(timestamp, moneyDeposited.Timestamp);
+        Assert.Equal(id, moneyDeposited.Id);
+        Assert.Equal(description, moneyDeposited.Description);
     }
 
     [Fact]
@@ -199,17 +204,19 @@ public class EventTests
         // Arrange
         var accountId = "test-123";
         var amount = 25.50m;
-        var newBalance = 75.25m;
         var timestamp = DateTime.UtcNow;
+        var id = Guid.NewGuid();
+        var description = "Test withdrawal";
 
         // Act
-        var moneyWithdrawn = new MoneyWithdrawn(accountId, amount, newBalance, timestamp);
+        var moneyWithdrawn = new MoneyWithdrawn(accountId, amount, timestamp, id, description);
 
         // Assert
         Assert.Equal(accountId, moneyWithdrawn.AccountId);
         Assert.Equal(amount, moneyWithdrawn.Amount);
-        Assert.Equal(newBalance, moneyWithdrawn.NewBalance);
         Assert.Equal(timestamp, moneyWithdrawn.Timestamp);
+        Assert.Equal(id, moneyWithdrawn.Id);
+        Assert.Equal(description, moneyWithdrawn.Description);
     }
 
     [Fact]

@@ -27,7 +27,7 @@ public class AccountActor : Actor, IAccountActor
         {
             AccountId = Id.GetId(),
             AccountName = accountName,
-            Transactions = new List<Transaction>(),
+            Transactions = new List<ITransactionEvent>(),
             CreatedAt = DateTime.UtcNow,
             LastUpdated = DateTime.UtcNow
         };
@@ -49,20 +49,18 @@ public class AccountActor : Actor, IAccountActor
 
         var accountState = await GetAccountState();
         
-        var transaction = new Transaction
-        {
-            Type = TransactionType.Deposit,
-            Amount = amount,
-            Timestamp = DateTime.UtcNow,
-            Description = $"Deposit of {amount:C}"
-        };
+        var depositEvent = new MoneyDeposited(
+            accountState.AccountId, 
+            amount, 
+            DateTime.UtcNow,
+            Guid.NewGuid(),
+            $"Deposit of {amount:C}"
+        );
         
-        accountState.Transactions.Add(transaction);
+        accountState.Transactions.Add(depositEvent);
         accountState.LastUpdated = DateTime.UtcNow;
 
         await StateManager.SetStateAsync(AccountStateKey, accountState);
-
-        var depositEvent = new MoneyDeposited(accountState.AccountId, amount, accountState.Balance, accountState.LastUpdated);
         await PublishEvent(depositEvent);
 
         Logger.LogInformation("Deposited {Amount} to account {AccountId}. New balance: {Balance}", amount, accountState.AccountId, accountState.Balance);
@@ -82,20 +80,18 @@ public class AccountActor : Actor, IAccountActor
             throw new InvalidOperationException($"Insufficient funds. Current balance: {accountState.Balance}, Requested withdrawal: {amount}");
         }
 
-        var transaction = new Transaction
-        {
-            Type = TransactionType.Withdrawal,
-            Amount = amount,
-            Timestamp = DateTime.UtcNow,
-            Description = $"Withdrawal of {amount:C}"
-        };
+        var withdrawEvent = new MoneyWithdrawn(
+            accountState.AccountId, 
+            amount, 
+            DateTime.UtcNow,
+            Guid.NewGuid(),
+            $"Withdrawal of {amount:C}"
+        );
         
-        accountState.Transactions.Add(transaction);
+        accountState.Transactions.Add(withdrawEvent);
         accountState.LastUpdated = DateTime.UtcNow;
 
         await StateManager.SetStateAsync(AccountStateKey, accountState);
-
-        var withdrawEvent = new MoneyWithdrawn(accountState.AccountId, amount, accountState.Balance, accountState.LastUpdated);
         await PublishEvent(withdrawEvent);
 
         Logger.LogInformation("Withdrew {Amount} from account {AccountId}. New balance: {Balance}", amount, accountState.AccountId, accountState.Balance);
