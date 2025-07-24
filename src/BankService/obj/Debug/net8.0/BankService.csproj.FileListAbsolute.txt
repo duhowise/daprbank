@@ -18,6 +18,10 @@
 /home/runner/work/daprbank/daprbank/src/BankService/bin/Debug/net8.0/Grpc.Net.Common.dll
 /home/runner/work/daprbank/daprbank/src/BankService/bin/Debug/net8.0/Microsoft.Extensions.DependencyInjection.dll
 /home/runner/work/daprbank/daprbank/src/BankService/bin/Debug/net8.0/Microsoft.Extensions.DependencyInjection.Abstractions.dll
+/home/runner/work/daprbank/daprbank/src/BankService/bin/Debug/net8.0/Microsoft.OpenApi.dll
+/home/runner/work/daprbank/daprbank/src/BankService/bin/Debug/net8.0/Swashbuckle.AspNetCore.Swagger.dll
+/home/runner/work/daprbank/daprbank/src/BankService/bin/Debug/net8.0/Swashbuckle.AspNetCore.SwaggerGen.dll
+/home/runner/work/daprbank/daprbank/src/BankService/bin/Debug/net8.0/Swashbuckle.AspNetCore.SwaggerUI.dll
 /home/runner/work/daprbank/daprbank/src/BankService/obj/Debug/net8.0/BankService.csproj.AssemblyReference.cache
 /home/runner/work/daprbank/daprbank/src/BankService/obj/Debug/net8.0/BankService.GeneratedMSBuildEditorConfig.editorconfig
 /home/runner/work/daprbank/daprbank/src/BankService/obj/Debug/net8.0/BankService.AssemblyInfoInputs.cache
@@ -40,7 +44,3 @@
 /home/runner/work/daprbank/daprbank/src/BankService/obj/Debug/net8.0/BankService.pdb
 /home/runner/work/daprbank/daprbank/src/BankService/obj/Debug/net8.0/BankService.genruntimeconfig.cache
 /home/runner/work/daprbank/daprbank/src/BankService/obj/Debug/net8.0/ref/BankService.dll
-/home/runner/work/daprbank/daprbank/src/BankService/bin/Debug/net8.0/Microsoft.OpenApi.dll
-/home/runner/work/daprbank/daprbank/src/BankService/bin/Debug/net8.0/Swashbuckle.AspNetCore.Swagger.dll
-/home/runner/work/daprbank/daprbank/src/BankService/bin/Debug/net8.0/Swashbuckle.AspNetCore.SwaggerGen.dll
-/home/runner/work/daprbank/daprbank/src/BankService/bin/Debug/net8.0/Swashbuckle.AspNetCore.SwaggerUI.dll

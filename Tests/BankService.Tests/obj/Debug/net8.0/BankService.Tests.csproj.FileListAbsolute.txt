@@ -25,6 +25,8 @@
 /home/runner/work/daprbank/daprbank/Tests/BankService.Tests/bin/Debug/net8.0/Microsoft.VisualStudio.CodeCoverage.Shim.dll
 /home/runner/work/daprbank/daprbank/Tests/BankService.Tests/bin/Debug/net8.0/Microsoft.Extensions.DependencyInjection.dll
 /home/runner/work/daprbank/daprbank/Tests/BankService.Tests/bin/Debug/net8.0/Microsoft.Extensions.DependencyInjection.Abstractions.dll
+/home/runner/work/daprbank/daprbank/Tests/BankService.Tests/bin/Debug/net8.0/Microsoft.Extensions.Logging.Abstractions.dll
+/home/runner/work/daprbank/daprbank/Tests/BankService.Tests/bin/Debug/net8.0/Microsoft.OpenApi.dll
 /home/runner/work/daprbank/daprbank/Tests/BankService.Tests/bin/Debug/net8.0/Microsoft.TestPlatform.CoreUtilities.dll
 /home/runner/work/daprbank/daprbank/Tests/BankService.Tests/bin/Debug/net8.0/Microsoft.TestPlatform.PlatformAbstractions.dll
 /home/runner/work/daprbank/daprbank/Tests/BankService.Tests/bin/Debug/net8.0/Microsoft.VisualStudio.TestPlatform.ObjectModel.dll
@@ -35,6 +37,10 @@
 /home/runner/work/daprbank/daprbank/Tests/BankService.Tests/bin/Debug/net8.0/testhost.dll
 /home/runner/work/daprbank/daprbank/Tests/BankService.Tests/bin/Debug/net8.0/Newtonsoft.Json.dll
 /home/runner/work/daprbank/daprbank/Tests/BankService.Tests/bin/Debug/net8.0/NuGet.Frameworks.dll
+/home/runner/work/daprbank/daprbank/Tests/BankService.Tests/bin/Debug/net8.0/Swashbuckle.AspNetCore.Swagger.dll
+/home/runner/work/daprbank/daprbank/Tests/BankService.Tests/bin/Debug/net8.0/Swashbuckle.AspNetCore.SwaggerGen.dll
+/home/runner/work/daprbank/daprbank/Tests/BankService.Tests/bin/Debug/net8.0/Swashbuckle.AspNetCore.SwaggerUI.dll
+/home/runner/work/daprbank/daprbank/Tests/BankService.Tests/bin/Debug/net8.0/System.Diagnostics.DiagnosticSource.dll
 /home/runner/work/daprbank/daprbank/Tests/BankService.Tests/bin/Debug/net8.0/xunit.abstractions.dll
 /home/runner/work/daprbank/daprbank/Tests/BankService.Tests/bin/Debug/net8.0/xunit.assert.dll
 /home/runner/work/daprbank/daprbank/Tests/BankService.Tests/bin/Debug/net8.0/xunit.core.dll
@@ -118,9 +124,3 @@
 /home/runner/work/daprbank/daprbank/Tests/BankService.Tests/obj/Debug/net8.0/BankService.Tests.pdb
 /home/runner/work/daprbank/daprbank/Tests/BankService.Tests/obj/Debug/net8.0/BankService.Tests.genruntimeconfig.cache
 /home/runner/work/daprbank/daprbank/Tests/BankService.Tests/obj/Debug/net8.0/ref/BankService.Tests.dll
-/home/runner/work/daprbank/daprbank/Tests/BankService.Tests/bin/Debug/net8.0/Microsoft.OpenApi.dll
-/home/runner/work/daprbank/daprbank/Tests/BankService.Tests/bin/Debug/net8.0/Swashbuckle.AspNetCore.Swagger.dll
-/home/runner/work/daprbank/daprbank/Tests/BankService.Tests/bin/Debug/net8.0/Swashbuckle.AspNetCore.SwaggerGen.dll
-/home/runner/work/daprbank/daprbank/Tests/BankService.Tests/bin/Debug/net8.0/Swashbuckle.AspNetCore.SwaggerUI.dll
-/home/runner/work/daprbank/daprbank/Tests/BankService.Tests/bin/Debug/net8.0/Microsoft.Extensions.Logging.Abstractions.dll
-/home/runner/work/daprbank/daprbank/Tests/BankService.Tests/bin/Debug/net8.0/System.Diagnostics.DiagnosticSource.dll
