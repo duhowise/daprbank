@@ -13,6 +13,7 @@ public class AccountStateTests
         // Assert
         Assert.Equal(string.Empty, accountState.AccountId);
         Assert.Equal(string.Empty, accountState.AccountName);
+        Assert.Empty(accountState.Transactions);
         Assert.Equal(0m, accountState.Balance);
         Assert.True(accountState.CreatedAt <= DateTime.UtcNow);
         Assert.True(accountState.LastUpdated <= DateTime.UtcNow);
@@ -24,16 +25,19 @@ public class AccountStateTests
         // Arrange
         var accountId = "test-123";
         var accountName = "Test Account";
-        var balance = 100.50m;
         var createdAt = DateTime.UtcNow.AddDays(-1);
         var lastUpdated = DateTime.UtcNow;
+        var transactions = new List<Transaction>
+        {
+            new Transaction { Type = TransactionType.Deposit, Amount = 100.50m }
+        };
 
         // Act
         var accountState = new AccountState
         {
             AccountId = accountId,
             AccountName = accountName,
-            Balance = balance,
+            Transactions = transactions,
             CreatedAt = createdAt,
             LastUpdated = lastUpdated
         };
@@ -41,9 +45,113 @@ public class AccountStateTests
         // Assert
         Assert.Equal(accountId, accountState.AccountId);
         Assert.Equal(accountName, accountState.AccountName);
-        Assert.Equal(balance, accountState.Balance);
+        Assert.Equal(transactions, accountState.Transactions);
+        Assert.Equal(100.50m, accountState.Balance);
         Assert.Equal(createdAt, accountState.CreatedAt);
         Assert.Equal(lastUpdated, accountState.LastUpdated);
+    }
+
+    [Fact]
+    public void AccountState_BalanceCalculation_WithMultipleTransactions_ShouldBeCorrect()
+    {
+        // Arrange
+        var accountState = new AccountState
+        {
+            AccountId = "test-123",
+            AccountName = "Test Account",
+            Transactions = new List<Transaction>
+            {
+                new Transaction { Type = TransactionType.Deposit, Amount = 100m },
+                new Transaction { Type = TransactionType.Deposit, Amount = 50m },
+                new Transaction { Type = TransactionType.Withdrawal, Amount = 25m },
+                new Transaction { Type = TransactionType.Deposit, Amount = 75m }
+            }
+        };
+
+        // Act
+        var balance = accountState.Balance;
+
+        // Assert
+        Assert.Equal(200m, balance); // 100 + 50 - 25 + 75 = 200
+    }
+
+    [Fact]
+    public void AccountState_BalanceCalculation_WithOnlyDeposits_ShouldBeCorrect()
+    {
+        // Arrange
+        var accountState = new AccountState
+        {
+            Transactions = new List<Transaction>
+            {
+                new Transaction { Type = TransactionType.Deposit, Amount = 100m },
+                new Transaction { Type = TransactionType.Deposit, Amount = 50m }
+            }
+        };
+
+        // Act & Assert
+        Assert.Equal(150m, accountState.Balance);
+    }
+
+    [Fact]
+    public void AccountState_BalanceCalculation_WithOnlyWithdrawals_ShouldBeNegative()
+    {
+        // Arrange
+        var accountState = new AccountState
+        {
+            Transactions = new List<Transaction>
+            {
+                new Transaction { Type = TransactionType.Withdrawal, Amount = 25m },
+                new Transaction { Type = TransactionType.Withdrawal, Amount = 15m }
+            }
+        };
+
+        // Act & Assert
+        Assert.Equal(-40m, accountState.Balance);
+    }
+}
+
+public class TransactionTests
+{
+    [Fact]
+    public void Transaction_DefaultValues_ShouldBeCorrect()
+    {
+        // Act
+        var transaction = new Transaction();
+
+        // Assert
+        Assert.NotEqual(Guid.Empty, transaction.Id);
+        Assert.Equal(TransactionType.Deposit, transaction.Type);
+        Assert.Equal(0m, transaction.Amount);
+        Assert.True(transaction.Timestamp <= DateTime.UtcNow);
+        Assert.Equal(string.Empty, transaction.Description);
+    }
+
+    [Fact]
+    public void Transaction_SetProperties_ShouldWorkCorrectly()
+    {
+        // Arrange
+        var id = Guid.NewGuid();
+        var type = TransactionType.Withdrawal;
+        var amount = 50.25m;
+        var timestamp = DateTime.UtcNow.AddMinutes(-5);
+        var description = "Test withdrawal";
+
+        // Act
+        var transaction = new Transaction
+        {
+            Id = id,
+            Type = type,
+            Amount = amount,
+            Timestamp = timestamp,
+            Description = description
+        };
+
+        // Assert
+        Assert.Equal(id, transaction.Id);
+        Assert.Equal(type, transaction.Type);
+        Assert.Equal(amount, transaction.Amount);
+        Assert.Equal(timestamp, transaction.Timestamp);
+        Assert.Equal(description, transaction.Description);
     }
 }
 

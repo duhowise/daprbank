@@ -27,7 +27,7 @@ public class AccountActor : Actor, IAccountActor
         {
             AccountId = Id.GetId(),
             AccountName = accountName,
-            Balance = 0m,
+            Transactions = new List<Transaction>(),
             CreatedAt = DateTime.UtcNow,
             LastUpdated = DateTime.UtcNow
         };
@@ -48,7 +48,16 @@ public class AccountActor : Actor, IAccountActor
         }
 
         var accountState = await GetAccountState();
-        accountState.Balance += amount;
+        
+        var transaction = new Transaction
+        {
+            Type = TransactionType.Deposit,
+            Amount = amount,
+            Timestamp = DateTime.UtcNow,
+            Description = $"Deposit of {amount:C}"
+        };
+        
+        accountState.Transactions.Add(transaction);
         accountState.LastUpdated = DateTime.UtcNow;
 
         await StateManager.SetStateAsync(AccountStateKey, accountState);
@@ -73,7 +82,15 @@ public class AccountActor : Actor, IAccountActor
             throw new InvalidOperationException($"Insufficient funds. Current balance: {accountState.Balance}, Requested withdrawal: {amount}");
         }
 
-        accountState.Balance -= amount;
+        var transaction = new Transaction
+        {
+            Type = TransactionType.Withdrawal,
+            Amount = amount,
+            Timestamp = DateTime.UtcNow,
+            Description = $"Withdrawal of {amount:C}"
+        };
+        
+        accountState.Transactions.Add(transaction);
         accountState.LastUpdated = DateTime.UtcNow;
 
         await StateManager.SetStateAsync(AccountStateKey, accountState);
